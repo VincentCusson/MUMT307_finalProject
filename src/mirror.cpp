@@ -23,7 +23,7 @@ struct Cusson : Module {
 
 	void process(const ProcessArgs& args) override {
 		// Mirror the input signal to the output
-		float in = float v = 0.f;
+		float in = 0.f;
 		in = inputs[IN1_INPUT].getVoltage();
 		outputs[OUT1_OUTPUT].setVoltage(in);
 	}
@@ -33,7 +33,7 @@ struct Cusson : Module {
 struct CussonWidget : ModuleWidget {
 	CussonWidget(Cusson* module) {
 		setModule(module);
-		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/cusson.svg")));
+		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/mirror.svg")));
 
 		addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
 		addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
