@@ -15,7 +15,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.2 5c3e80d, 2017-08-06"
-   sodipodi:docname="sampleAndHold.svg">
+   sodipodi:docname="mirror.svg">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -26,15 +26,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.32"
-     inkscape:cx="35.411255"
+     inkscape:cx="-100.95238"
      inkscape:cy="265.55393"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer2"
      showgrid="false"
      inkscape:window-width="1680"
      inkscape:window-height="1005"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-x="6"
+     inkscape:window-y="5"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata5">
@@ -44,7 +44,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -110,19 +110,21 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="components"
-     style="display:inline">
+     style="display:none">
     <circle
        style="display:inline;opacity:1;fill:#00ff00;fill-opacity:1;stroke-width:0.26458332"
        id="circle931"
        cx="9.9595575"
        cy="15.450757"
-       r="3.7081757" />
+       r="3.7081757"
+       inkscape:label="in1" />
     <circle
        r="3.7081757"
        cy="96.329063"
        cx="9.9595575"
        id="circle933"
-       style="display:inline;opacity:1;fill:#0000ff;fill-opacity:1;stroke-width:0.26458332" />
+       style="display:inline;opacity:1;fill:#0000ff;fill-opacity:1;stroke-width:0.26458332"
+       inkscape:label="out1" />
   </g>
   <g
      inkscape:groupmode="layer"
