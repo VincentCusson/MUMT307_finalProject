@@ -22,6 +22,10 @@ struct Cusson : Module {
 	}
 
 	void process(const ProcessArgs& args) override {
+		// Mirror the input signal to the output
+		float in = float v = 0.f;
+		in = inputs[IN1_INPUT].getVoltage();
+		outputs[OUT1_OUTPUT].setVoltage(in);
 	}
 };
 
