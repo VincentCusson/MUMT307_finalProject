@@ -6,7 +6,7 @@ Plugin* pluginInstance;
 
 void init(Plugin* p) {
 	pluginInstance = p;
-	p->addModel(modelCusson);
+	p->addModel(modelMirror);
 
 	// Add modules here
 	// p->addModel(modelMyModule);

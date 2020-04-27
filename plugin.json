@@ -14,8 +14,8 @@
   "changelogUrl": "",
   "modules": [
     {
-      "slug": "cusson",
-      "name": "mirror",
+      "slug": "Mirror",
+      "name": "Mirror",
       "description": "Output the identical signal",
       "tags": []
     }

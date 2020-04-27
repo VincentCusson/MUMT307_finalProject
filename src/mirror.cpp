@@ -1,7 +1,7 @@
 #include "plugin.hpp"
 
 
-struct Cusson : Module {
+struct Mirror : Module {
 	enum ParamIds {
 		NUM_PARAMS
 	};
@@ -17,7 +17,7 @@ struct Cusson : Module {
 		NUM_LIGHTS
 	};
 
-	Cusson() {
+	Mirror() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 	}
 
@@ -30,8 +30,8 @@ struct Cusson : Module {
 };
 
 
-struct CussonWidget : ModuleWidget {
-	CussonWidget(Cusson* module) {
+struct MirrorWidget : ModuleWidget {
+	MirrorWidget(Mirror* module) {
 		setModule(module);
 		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/mirror.svg")));
 
@@ -40,11 +40,11 @@ struct CussonWidget : ModuleWidget {
 		addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 		addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(9.96, 15.451)), module, Cusson::IN1_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(9.96, 15.451)), module, Mirror::IN1_INPUT));
 
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(9.96, 96.329)), module, Cusson::OUT1_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(9.96, 96.329)), module, Mirror::OUT1_OUTPUT));
 	}
 };
 
 
-Model* modelCusson = createModel<Cusson, CussonWidget>("cusson");
+Model* modelMirror = createModel<Mirror, MirrorWidget>("Mirror");
