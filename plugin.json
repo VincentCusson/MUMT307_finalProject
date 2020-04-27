@@ -18,6 +18,12 @@
       "name": "Mirror",
       "description": "Output the identical signal",
       "tags": []
+    },
+    {
+      "slug": "playGround",
+      "name": "playGround",
+      "description": "test module to play with components",
+      "tags": []
     }
   ]
 }
