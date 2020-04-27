@@ -1,0 +1,23 @@
+{
+  "slug": "cusson",
+  "name": "cusson",
+  "version": "1.0.0",
+  "license": "proprietary",
+  "brand": "cusson",
+  "author": "",
+  "authorEmail": "",
+  "authorUrl": "",
+  "pluginUrl": "",
+  "manualUrl": "",
+  "sourceUrl": "",
+  "donateUrl": "",
+  "changelogUrl": "",
+  "modules": [
+    {
+      "slug": "cusson",
+      "name": "mirror",
+      "description": "Output the identical signal",
+      "tags": []
+    }
+  ]
+}
