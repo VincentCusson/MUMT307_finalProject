@@ -11,3 +11,4 @@ extern Plugin* pluginInstance;
 // extern Model* modelMyModule;
 extern Model* modelMirror;
 extern Model* modelPlayGround;
+extern Model* modelSynth;

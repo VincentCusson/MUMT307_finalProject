@@ -24,6 +24,12 @@
       "name": "playGround",
       "description": "test module to play with components",
       "tags": []
+    },
+    {
+      "slug": "synth",
+      "name": "synth",
+      "description": "A (basic) synth",
+      "tags": []
     }
   ]
 }

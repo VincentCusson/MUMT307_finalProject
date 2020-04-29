@@ -10,5 +10,6 @@ void init(Plugin* p) {
 	// p->addModel(modelMyModule);
 	p->addModel(modelMirror);
 	p->addModel(modelPlayGround);
+	p->addModel(modelSynth);
 
 }
