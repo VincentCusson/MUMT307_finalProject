@@ -8,7 +8,7 @@ I designed my first module, a basic synthesizer, for the [VCV Rack](https://vcvr
 * [Introduction](#Introduction)
 * [Objectives](#Objectives)
 * [Methodology](#Methodology)
-* [Result](#Result)
+* [Results](#Results)
 * [Issues and future work](#Issues-and-future-work)
 
 #### Introduction
@@ -73,12 +73,16 @@ Following my experimentation with the 'Playground' module, here is a list of fea
 The ADSR envelope is based on a tutorial from the book 'Developing virtual synthesizers with VCV Rack' by Leonardo Gabrielli.
 The distortion effect is based on a module from lindenbergresearch.
 
+Here is a screenshot of the final synth.
+
+![](/report/synth.png "Synth")
+
 [Here](/report/synthDemo.mp4) is a short video demo of the synth in action.
 
 #### Issues and future work
 The two main issues I had during this project are:
 * The CV conventions in the VCV Rack software
- * In different parts of the code, we use 10V, 5V, and even normalized values. Expecting or producing the wrong kind of signal can be problematic for our speakers and ears. Mapping the range and interpolation type of some knobs to their audio parameters was also challenging.
+  * In different parts of the code, we use 10V, 5V, and even normalized values. Expecting or producing the wrong kind of signal can be problematic for our speakers and ears. Mapping the range and interpolation type of some knobs to their audio parameters was also challenging.
 
 
 * The C++ syntax
