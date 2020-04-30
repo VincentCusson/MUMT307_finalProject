@@ -38,8 +38,6 @@ struct Synth : Module {
 	float env;
 	#define EPSILON 1e-9
 
-	const float octShift[5] = {0.25f, 0.5f, 1.f, 2.f, 4.f};
-
 
 	Synth() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
@@ -59,16 +57,17 @@ struct Synth : Module {
 	void process(const ProcessArgs& args) override {
 		// Sine output
 		float pitch = inputs[VOCT_INPUT].getVoltage();
+
+		// Octave
+		float oct = params[OCTAVE_PARAM].getValue();
+		pitch += oct;
+
 		// Detune
 		pitch += params[DETUNE_PARAM].getValue() / 12.0f;;
 		pitch = clamp(pitch, -4.f, 4.f);
-		float freq = dsp::FREQ_C4 * std::pow(2.f, pitch);
-		// Octave
-		int octKnob = params[OCTAVE_PARAM].getValue()+2;
-		float oct = octShift[octKnob];
-		freq = freq * oct;
 
 		// Accumulate the phase
+		float freq = dsp::FREQ_C4 * std::pow(2.f, pitch);
 		phase += freq * args.sampleTime;
 		if (phase >= 0.5f)
 				phase -= 1.f;
@@ -81,86 +80,78 @@ struct Synth : Module {
 			float harmo = std::sin(2.f* i * M_PI * phase)*(1.f/i);
 			sine = sine + harmo;
 	}
-	// Tremolo
-	float lfo = std::sin(2.f * M_PI * phaseLfo);
-	//float pitchLfo = -3.9f;
-	//pitchLfo = clamp(pitchLfo, -4.f, 4.f);
-	//float freqLfo = dsp::FREQ_C4 * std::pow(2.f, pitchLfo);
-	float freqLfo = params[TREMOLO_PARAM].getValue();
-	phaseLfo += freqLfo * args.sampleTime;
-	if (phaseLfo >= 0.5f)
-			phaseLfo -= 1.f;
-	float offset = 1 - 0.05;
-	lfo = lfo * 0.08f + offset;
+		// Tremolo
+		float lfo = std::sin(2.f * M_PI * phaseLfo);
+		float freqLfo = params[TREMOLO_PARAM].getValue();
+		phaseLfo += freqLfo * args.sampleTime;
+		if (phaseLfo >= 0.5f)
+				phaseLfo -= 1.f;
+				float offset = 1 - 0.05;
+				lfo = lfo * 0.08f + offset;
+
+//////////////////////////////////////////////////////////////
+		// Velocity
+		float velo = inputs[VELOCITY_INPUT].getVoltage()/8.f;
+//////////////////////////////////////////////////////////////
+		// WaveShapping
+		// https://github.com/lindenbergresearch/LRTRack/blob/master/src/modules/ReShaper.cpp
+		float x = clamp(sine * 0.1f, -1.f, 1.f);
+		float a = clamp(params[SHAPER_PARAM].getValue(), 1.f, 50.f);
+		sine = x * (fabs(x) + a) / (x * x + (a - 1) * fabs(x) + 1);
+		sine = sine * 5.f;
 
 
 //////////////////////////////////////////////////////////////
-	// Velocity
-	float velo = inputs[VELOCITY_INPUT].getVoltage()/8.f;
-//////////////////////////////////////////////////////////////
-	// WaveShapping
-	// https://github.com/lindenbergresearch/LRTRack/blob/master/src/modules/ReShaper.cpp
-	float x = clamp(sine * 0.1f, -1.f, 1.f);
-	float a = clamp(params[SHAPER_PARAM].getValue(), 1.f, 50.f);
-	sine = x * (fabs(x) + a) / (x * x + (a - 1) * fabs(x) + 1);
-	sine = sine * 5.f;
+		// Envelope
+		float sus = params[S_PARAM].getValue();
+		float Astep = 1.f / (EPSILON + args.sampleRate * params[A_PARAM].getValue());
+		float Dstep = (sus - 1.0) / (EPSILON + args.sampleRate * params[D_PARAM].getValue());
+		float Rstep = -(sus + EPSILON) / (EPSILON + args.sampleRate * params[R_PARAM].getValue());
+
+		Astep = clamp(Astep, EPSILON, 0.5);
+		Dstep = std::max(Dstep, -0.5f);
+		Rstep = std::max(Rstep, -1.f);
+
+		bool gate = inputs[GATE_INPUT].getVoltage() >= 1.0;
+		if (edgeDetector.process(gate)) {
+			isAtk = true;
+			isRunning = true;
+			lights[GATELIGHT_LIGHT].setSmoothBrightness(1,5e-6f);
+		} else {
+			lights[GATELIGHT_LIGHT].setSmoothBrightness(0,5e-6f);
+		}
 
 
-//////////////////////////////////////////////////////////////
-	// Envelope
-	float sus = params[S_PARAM].getValue();
-	float Astep = 1.f / (EPSILON + args.sampleRate * params[A_PARAM].getValue());
-	float Dstep = (sus - 1.0) / (EPSILON + args.sampleRate * params[D_PARAM].getValue());
-	float Rstep = -(sus + EPSILON) / (EPSILON + args.sampleRate * params[R_PARAM].getValue());
-
-	Astep = clamp(Astep, EPSILON, 0.5);
-	Dstep = std::max(Dstep, -0.5f);
-	Rstep = std::max(Rstep, -1.f);
-
-	bool gate = inputs[GATE_INPUT].getVoltage() >= 1.0;
-	if (edgeDetector.process(gate)) {
-		isAtk = true;
-		isRunning = true;
-		lights[GATELIGHT_LIGHT].setSmoothBrightness(1,5e-6f);
-	} else {
-		lights[GATELIGHT_LIGHT].setSmoothBrightness(0,5e-6f);
-	}
-
-
-	if (isRunning) {
-		if (gate) {
-			// ATK
-			if (isAtk) {
-				env += Astep;
-				if (env >= 1.0)
-					isAtk = false;
-			}
-			else {
-				// DEC
-				if (env <= sus + 0.001) {
-					env = sus;
+		if (isRunning) {
+			if (gate) {
+				// ATK
+				if (isAtk) {
+					env += Astep;
+					if (env >= 1.0)
+						isAtk = false;
 				}
 				else {
-					env += Dstep;
+					// DEC
+					if (env <= sus + 0.001) {
+						env = sus;
+					}
+					else {
+						env += Dstep;
+					}
 				}
+			} else {
+				// REL
+				env += Rstep;
+				if (env <= Rstep)
+					isRunning = false;
 			}
 		} else {
-			// REL
-			env += Rstep;
-			if (env <= Rstep)
-				isRunning = false;
+			env = 0.0;
 		}
-	} else {
-		env = 0.0;
-	}
 
-	if (outputs[OUT_OUTPUT].isConnected()) {
-		outputs[OUT_OUTPUT].setVoltage(5.f * sine * lfo * velo * env);
-	}
-
-//////////////////////////////////////////////////////////////
-
-
+		if (outputs[OUT_OUTPUT].isConnected()) {
+			outputs[OUT_OUTPUT].setVoltage(5.f * sine * lfo * velo * env);
+		}
 	}
 };
 
